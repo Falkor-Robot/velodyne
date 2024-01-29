@@ -118,12 +118,12 @@ Transform::Transform(const rclcpp::NodeOptions & options)
   }
 
   // advertise output point cloud (before subscribing to input data)
-  output_ = this->create_publisher<sensor_msgs::msg::PointCloud2>("velodyne_points", 10);
+  output_ = this->create_publisher<sensor_msgs::msg::PointCloud2>("velodyne_points", rclcpp::SystemDefaultsQoS());
 
   // subscribe to VelodyneScan packets using transform filter
   tf_filter_ =
     std::make_unique<tf2_ros::MessageFilter<velodyne_msgs::msg::VelodyneScan>>(
-    velodyne_scan_, tf_buffer_, target_frame, 10,
+    velodyne_scan_, tf_buffer_, target_frame, output_->get_queue_size(),
     this->get_node_logging_interface(), this->get_node_clock_interface());
   tf_filter_->registerCallback(
     std::bind(&Transform::processScan, this, std::placeholders::_1));

@@ -121,12 +121,12 @@ Convert::Convert(const rclcpp::NodeOptions & options)
 
   // advertise output point cloud (before subscribing to input data)
   output_ =
-    this->create_publisher<sensor_msgs::msg::PointCloud2>("velodyne_points", 10);
+    this->create_publisher<sensor_msgs::msg::PointCloud2>("velodyne_points", rclcpp::SystemDefaultsQoS());
 
   // subscribe to VelodyneScan packets
   velodyne_scan_ =
     this->create_subscription<velodyne_msgs::msg::VelodyneScan>(
-    "velodyne_packets", rclcpp::QoS(10),
+    "velodyne_packets", rclcpp::SystemDefaultsQoS(),
     std::bind(&Convert::processScan, this, std::placeholders::_1));
 
   // Diagnostics
